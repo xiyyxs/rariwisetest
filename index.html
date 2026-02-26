@@ -445,6 +445,12 @@ body { min-height: calc(var(--vh, 1vh) * 100); }
         min-height: 100svh;
         }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
         .milky-way {
             filter: none !important;      
             opacity: 0.18;                
@@ -737,4 +743,5 @@ setVH();
 window.addEventListener('resize', setVH);
     </script>
 </body>
+
 </html>
