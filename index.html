@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>rariwise | Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fox-dark: #10112c;
+            --fox-orange: #2757bd;
+            --fox-cream: #ece9fd;
+            --fox-white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    background: #050508;
+    font-family: 'Montserrat', sans-serif;
+
+    display: grid;
+    place-items: center;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100dvh;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding: 20px;
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: max(15px, env(safe-area-inset-left));
+    padding-right: max(15px, env(safe-area-inset-right));
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    height: auto;
+    overscroll-behavior: none;
+}
+
+.sky-background { height: calc(var(--vh, 1vh) * 100); }
+body { min-height: calc(var(--vh, 1vh) * 100); }
+
+.sky-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    inset: 0;
+    
+    width: 100vw;
+    height: 100dvh;
+    
+    
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(47, 34, 189, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(78, 18, 243, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(10, 15, 30, 1) 0%, #020205 100%);
+        
+    z-index: -1;
+
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.stars-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    filter: blur(0.2px);
+}
+
+.milky-way {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    filter: blur(60px);
+    background-image: radial-gradient(ellipse at 50% 50%, rgba(230, 126, 34, 0.1) 0%, transparent 60%);
+    transform: rotate(-15deg) scale(2);
+}
+
+.meteor {
+    position: fixed;
+    width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, #fff, transparent);
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.stars-layer,
+.milky-way {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+@supports (height: 100dvh) {
+    .sky-background {
+        height: 100dvh;
+    }
+}
+
+@supports not (height: 100dvh) {
+    .sky-background {
+        height: 100vh;
+    }
+}
+
+@supports not (height: 100svh) {
+  @media (max-width: 768px) {
+    .sky-background { height: 100vh; }
+    body { min-height: 100vh; }
+  }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes meteor-animation {
+    0% { transform: translate(0, 0) rotate(20deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translate(600px, 200px) rotate(20deg); opacity: 0; }
+}
+
+        * {
+            -webkit-user-select: none;
+            -ms-user-select: none;  
+            user-select: none;   
+            -webkit-touch-callout: none;
+        }
+
+        img {
+            pointer-events: none;
+        }
+
+        .main-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: appAppear 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes appAppear {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .bio-container, .setup-container {
+            transition: transform 0.15s ease-out !important;
+        }
+
+        .stars-layer, .milky-way {
+             transition: transform 0.2s ease-out;
+            will-change: transform;
+        }
+
+        .bio-container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+            will-change: transform;
+            
+        }
+
+        .avatar-box {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            transform: translateZ(50px);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 2px solid var(--fox-orange);
+            padding: 4px;
+            background: var(--fox-dark);
+        }
+
+        .nickname {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, var(--fox-cream), var(--fox-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transform: translateZ(40px);
+        }
+
+        .about-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(253, 242, 233, 0.7);
+            margin-bottom: 35px;
+            font-weight: 300;
+            transform: translateZ(10px);
+        }
+
+        .setup-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--fox-orange);
+            color: var(--fox-dark);
+            padding: 16px 32px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 40px;
+            transform: translateZ(30px);
+        }
+
+        .setup-link:hover {
+            transform: scale(1.05) translateY(-3px) translateZ(30px);
+            background: var(--fox-white);
+            box-shadow: 0 15px 30px rgba(34, 37, 230, 0.4);
+        }
+
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            transform: translateZ(15px);
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-item {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--fox-cream);
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            transform: translateZ(20px);
+        }
+
+        .social-item img {
+            width: 1.4em;
+            height: 1.4em;
+            vertical-align: -0.125em;
+            display: inline-block;
+            transition: filter 0.3s ease;
+            transform: none !important; 
+            will-change: filter;
+        }
+
+        .social-item {
+            transition: all 0.3s ease;
+        }
+
+        .social-item:hover {
+            background: var(--fox-orange);
+            color: var(--fox-dark);
+            border-color: var(--fox-orange);
+            transform: translateY(-5px) rotate(8deg) translateZ(20px);  
+        }
+
+        .layout-container {
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            display: flex;
+            gap: 20px;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+            opacity: 0;
+            animation: appAppear 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            max-width: none;
+            margin: 0 auto;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding: 0;
+
+            margin-left: auto;
+            margin-right: auto;
+
+            box-sizing: border-box;
+        }
+
+        .setup-wrapper {
+            width: 0;
+            display: flex;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+
+        .setup-wrapper.active {
+            width: 340px;
+            max-width: 420px;
+            opacity: 1;
+            padding: 20px;
+            pointer-events: all;
+        }
+
+        .bio-container,
+        .setup-container {
+            margin-bottom: 20px;
+        }
+
+        .setup-container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            text-align: left;
+            padding: 40px 25px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+            min-width: 340px;
+            width: 340px;
+            box-sizing: border-box;
+        }
+
+        .setup-link {
+            z-index: 20;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .setup-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            color: var(--fox-orange);
+            margin-bottom: 20px;
+            transform: translateZ(20px);
+        }
+
+        .setup-list {
+            list-style: none;
+            transform: translateZ(15px);
+        }
+
+        .setup-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #ffffff;
+        }
+
+        .setup-item i {
+            width: 20px;
+            color: var(--fox-orange);
+            text-align: center;
+        }
+
+        .setup-label {
+            color: rgba(253, 242, 233, 0.5);
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .boosty-icon {
+            width: 1.4em;
+            height: 1.4em;
+            transition: filter 0.3s ease;
+            filter: brightness(0) invert(1);
+            position: fixed;
+        }
+
+
+        .social-item:hover .boosty-icon {
+            filter: brightness(0) invert(0);
+            position: fixed;
+        }
+
+        @media (max-width: 768px) {
+
+        body {
+        align-items: flex-start;
+        padding: 20px 10px;
+        min-height: 100svh;
+        }
+
+        .milky-way {
+            filter: none !important;      
+            opacity: 0.18;                
+        }
+
+        .sky-background {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100svh; 
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform;
+            z-index: -1;
+        }
+
+        .stars-layer,
+        .milky-way {
+            transform: none !important;
+        }
+
+        .layout-container {
+            flex-direction: column;
+            width: 100%;
+            gap: 20px;
+            padding: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+            margin: auto;
+            min-height: 100dvh;
+            justify-content: center;
+            align-items: center;
+            max-width: 450px;
+        }
+
+        .setup-container,
+        .bio-container {
+            border-radius: 25px;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .setup-wrapper {
+        width: 100%;
+        max-width: 400px;
+
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+
+        pointer-events: none;
+
+        transition:
+            opacity 0.35s ease,
+            transform 0.35s ease;
+        }
+
+        .setup-wrapper.active {
+            width: 100%;
+            padding: 0;
+            max-width: 400px;
+
+            opacity: 1;
+            transform: translateY(0) scale(1);
+
+            pointer-events: all;
+        }
+
+        .setup-container {
+            width: 100%;
+            min-width: unset;
+            height: auto;
+            max-width: 100%;
+        }
+
+        .bio-container,
+        .setup-container {
+        transform: none !important;
+        }
+
+        .social-item {
+            width: 55px;
+            height: 55px;
+            font-size: 20px;
+        }
+
+
+    }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="sky-background">
+        <div class="milky-way"></div>
+        <div class="stars-layer" id="stars-back"></div>
+        <div class="stars-layer" id="stars-mid"></div>
+        <div class="stars-layer" id="stars-front"></div>
+    </div>
+
+    <div class="layout-container" id="layout">
+
+    <div class="main-wrapper" id="card">
+        <div class="bio-container">
+            <div class="avatar-box">
+                <img src="avatar.png" alt="Avatar" class="avatar-img">
+            </div>
+
+            <h1 class="nickname">RARIWISE</h1>
+            
+            <p class="about-text">
+                Доброго времени суток! Меня зовут Вера или просто Рари. Все мои платформы и активности собраны здесь!
+            </p>
+
+            <a class="setup-link" id="toggleSetup">
+                <i class="fas fa-desktop"></i>
+                <span>PC Setup</span>
+            </a>
+
+            <div class="social-grid">
+                <div class="row">
+                    <a href="https://discord.gg/cRKcyzSG2G" class="social-item"><i class="fa-brands fa-discord"></i></a>
+                    <a href="https://t.me/rariwise" class="social-item"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="https://www.youtube.com/@rariwise" class="social-item"><i class="fab fa-youtube"></i></a>  
+                    <a href="https://www.twitch.tv/rariwise" class="social-item"><i class="fab fa-twitch"></i></a>
+                    <a href="https://boosty.to/rariwise02" class="social-item"><i class="fa fa-video-camera"></i></a>
+                </div>
+                <div class="row">
+                    <a href="https://www.donationalerts.com/r/rariwise" class="social-item"><i class="fas fa-hand-holding-dollar"></i></a>
+                    <a href="https://www.tiktok.com/@rari_wise?_t=8pdT7pPftb7&_r=1" class="social-item"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/a.ir_vera" class="social-item"><i class="fab fa-instagram"></i></a>
+                    <a href="https://boosty.to/rariwise" class="social-item boosty-link">
+                        <img src="boosty.png" alt="Boosty" class="boosty-icon">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="setup-wrapper" id="setupPanel">
+        <div class="setup-container card">
+            <h2 class="setup-title" style="font-family: 'Unbounded'; color: var(--fox-orange); margin-bottom: 20px; transform: translateZ(20px);">Hardware & Gear</h2>
+            <ul class="setup-list" style="list-style: none; transform: translateZ(15px);">
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-microchip" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">CPU</span><br><strong>AMD Ryzen 7 9800x3d</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-memory" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">GPU</span><br><strong>NVIDIA GeForce RTX 4060 TI</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-mouse" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">Mouse</span><br><strong>Logitech G304</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-keyboard" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">Keyboard</span><br><strong>AJAZZ АК820MAX</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-desktop" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">Monitor</span><br><strong>27" MSI G274QPX 240</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-camera" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">Camera</span><br><strong>Logitech BRIO 4K</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-headphones" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">Headset</span><br><strong>HyperX Cloud II</strong></div>
+                </li>
+                <li class="setup-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 13px;">
+                    <i class="fas fa-microphone" style="color: var(--fox-orange); width: 20px; text-align: center;"></i>
+                    <div><span style="color: rgba(253, 242, 233, 0.5); font-size: 10px; text-transform: uppercase;">Microphone</span><br><strong>Akg p220</strong></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const mainCard = document.querySelector('.main-wrapper');
+        const setupPanel = document.getElementById('setupPanel');
+        const setupContainer = document.querySelector('.setup-container');
+        const toggleBtn = document.getElementById('toggleSetup');
+
+        if (toggleBtn && setupPanel) {
+            toggleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                setupPanel.classList.toggle('active');
+            });
+        }
+    });
+
+    function createStars(containerId, count, sizeRange, twinkle) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * (sizeRange[1] - sizeRange[0]) + sizeRange[0];
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.opacity = Math.random() * 0.7 + 0.3;
+        
+        if (twinkle) {
+            const animDuration = 2 + Math.random() * 4;
+            const animDelay = Math.random() * 5;
+            star.style.animation = `twinkle ${animDuration}s infinite ease-in-out ${animDelay}s`;
+        }
+        container.appendChild(star);
+    }
+}
+
+function spawnMeteor() {
+    const meteor = document.createElement('div');
+    meteor.className = 'meteor';
+    meteor.style.left = `${Math.random() * 70 - 20}%`;
+    meteor.style.top = `${Math.random() * 50 - 10}%`;
+    const duration = 0.8 + Math.random() * 1.2;
+    meteor.style.width = `${100 + Math.random() * 150}px`;
+    meteor.style.animation = `meteor-animation ${duration}s ease-out forwards`;
+    document.querySelector('.sky-background').appendChild(meteor);
+    setTimeout(() => meteor.remove(), duration * 1000);
+}
+
+createStars('stars-back', 200, [0.5, 1.2], false);
+createStars('stars-mid', 100, [1.2, 1.8], true);
+createStars('stars-front', 40, [1.8, 2.5], true);
+
+setInterval(() => {
+    if (Math.random() > 0.3) spawnMeteor();
+    if (Math.random() > 0.8) setTimeout(spawnMeteor, 500);
+}, 2500);
+
+if (window.innerWidth > 768) {
+
+document.addEventListener('mousemove', (e) => {
+
+    const { clientX, clientY } = e;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    const cards = document.querySelectorAll('.bio-container, .setup-container');
+    cards.forEach(card => {
+        const moveX = (clientX - centerX) / 100;
+        const moveY = (clientY - centerY) / 100;
+        card.style.transform = `rotateY(${moveX}deg) rotateX(${-moveY}deg)`;
+    });
+
+    const layers = [
+        { id: 'stars-back', speed: 10 },
+        { id: 'stars-mid', speed: 20 },
+        { id: 'stars-front', speed: 40 },
+        { class: 'milky-way', speed: 15 }
+    ];
+
+    layers.forEach(layer => {
+        const el = layer.id
+            ? document.getElementById(layer.id)
+            : document.querySelector('.' + layer.class);
+
+        if (el) {
+            const x = (clientX - centerX) / layer.speed;
+            const y = (clientY - centerY) / layer.speed;
+            el.style.transform =
+                `translate(${x}px, ${y}px) ${
+                    layer.class === 'milky-way'
+                    ? 'rotate(-15deg) scale(2)'
+                    : ''
+                }`;
+        }
+    });
+
+});
+
+}
+
+function setVH() {
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+}
+setVH();
+window.addEventListener('resize', setVH);
+    </script>
+</body>
+</html>
