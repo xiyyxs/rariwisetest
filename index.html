@@ -443,6 +443,30 @@ body { min-height: calc(var(--vh, 1vh) * 100); }
         align-items: flex-start;
         padding: 20px 10px;
         min-height: 100svh;
+        -webkit-overflow-scrolling: touch;
+        }
+
+        .bio-container,
+        .setup-container,
+        .stars-layer,
+        .milky-way {
+            will-change: auto !important;
+        }
+
+        .main-wrapper,
+        .setup-wrapper {
+            content-visibility: auto;
+            contain-intrinsic-size: 600px;
+        }
+
+        .bio-container,
+        .setup-container {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+
+            background: rgba(255, 255, 255, 0.06) !important;
+
+            box-shadow: 0 10px 22px rgba(0,0,0,0.45) !important;
         }
 
         html, body {
@@ -453,8 +477,10 @@ body { min-height: calc(var(--vh, 1vh) * 100); }
 
         .milky-way {
             filter: none !important;      
-            opacity: 0.18;                
+            opacity: 0.15 !important;                
         }
+
+        .star { animation: none !important; }
 
         .sky-background {
             position: fixed;
@@ -743,5 +769,4 @@ setVH();
 window.addEventListener('resize', setVH);
     </script>
 </body>
-
 </html>
