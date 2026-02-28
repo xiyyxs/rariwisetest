@@ -444,8 +444,24 @@ body { min-height: calc(var(--vh, 1vh) * 100); }
         padding: 20px 10px;
         min-height: 100svh;
         -webkit-overflow-scrolling: touch;
+        overflow: hidden;
         }
 
+        .layout-container {
+            max-height: 100dvh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        
+
+        .sky-background,
+        .stars-layer,
+        .milky-way,
+        .meteor {
+          pointer-events: none !important;
+        }
+        
         .bio-container,
         .setup-container,
         .stars-layer,
